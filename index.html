@@ -12,7 +12,7 @@
 <link rel="icon" href="favicon.svg" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,500&family=Noto+Sans+TC:wght@400;500&family=Noto+Serif+TC:wght@500;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,500;1,400;1,500&family=LXGW+WenKai+TC:wght@300;400;700&family=Noto+Sans+TC:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="style.css">
 <script>document.documentElement.classList.add('js')</script>
 </head>
@@ -39,9 +39,13 @@
     </svg>
     <div class="wrap hero__main">
       <div>
-        <p class="hero__post"><span>國立體育大學</span><span>競技與教練科學研究所</span><span>教授兼所長</span></p>
-        <h1 class="hero__name" id="name" aria-label="林彥光"><span class="ch" aria-hidden="true"><span style="--i:0">林</span></span><span class="ch" aria-hidden="true"><span style="--i:1">彥</span></span><span class="ch" aria-hidden="true"><span style="--i:2">光</span></span><span class="seal" aria-hidden="true">彥光</span></h1>
-        <p class="hero__latin" lang="en">Y. K. Lin</p>
+        <div class="hero__sign">
+          <div>
+            <h1 class="hero__name" id="name" aria-label="林彥光"><span class="ch" aria-hidden="true"><span style="--i:0">林</span></span><span class="ch" aria-hidden="true"><span style="--i:1">彥</span></span><span class="ch" aria-hidden="true"><span style="--i:2">光</span></span></h1>
+            <p class="hero__latin" lang="en">Y. K. Lin</p>
+          </div>
+          <div class="colophon"><p class="hero__post"><span>國立體育大學</span><span>競技與教練科學研究所</span><span>教授兼所長</span></p><span class="seal" aria-hidden="true">彥光</span></div>
+        </div>
         <p class="hero__lead">專長是<strong>生物統計、高維度統計模型、機器學習與人工智慧</strong>。教高等體育統計、多變量統計與研究法。</p>
         <div class="hero__cta">
           <a class="btn" href="#teaching">看教學網站<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8h13M9.5 3.5 14 8l-4.5 4.5"/></svg></a>
@@ -61,7 +65,7 @@
     </div>
   </section>
 
-  <section class="sec sec--paper" id="teaching" aria-labelledby="teaching-h">
+  <section class="sec sec--paper" id="teaching" data-no="01" aria-labelledby="teaching-h">
     <div class="wrap">
       <div class="sec__head reveal">
         <p class="sec__no">01　Teaching</p>
@@ -127,7 +131,12 @@
     </div>
   </section>
 
-  <section class="sec" id="research" aria-labelledby="research-h">
+  <div class="band" aria-hidden="true"><div class="band__track">
+    <span>Precision Health</span><i></i><span>AI &amp; Prediction</span><i></i><span>Psychometrics</span><i></i><span>Exercise &amp; Well-being</span><i></i><span>Biostatistics</span><i></i><span>Machine Learning</span><i></i>
+    <span>Precision Health</span><i></i><span>AI &amp; Prediction</span><i></i><span>Psychometrics</span><i></i><span>Exercise &amp; Well-being</span><i></i><span>Biostatistics</span><i></i><span>Machine Learning</span><i></i>
+  </div></div>
+
+  <section class="sec" id="research" data-no="02" aria-labelledby="research-h">
     <div class="wrap">
       <div class="sec__head reveal">
         <p class="sec__no">02　Research</p>
@@ -142,7 +151,7 @@
     </div>
   </section>
 
-  <section class="sec sec--paper" id="publications" aria-labelledby="publications-h">
+  <section class="sec sec--paper" id="publications" data-no="03" aria-labelledby="publications-h">
     <div class="wrap">
       <div class="sec__head reveal">
         <p class="sec__no">03　Publications</p>
@@ -163,7 +172,7 @@
     </div>
   </section>
 
-  <section class="sec" id="career" aria-labelledby="career-h">
+  <section class="sec" id="career" data-no="04" aria-labelledby="career-h">
     <div class="wrap">
       <div class="sec__head reveal">
         <p class="sec__no">04　Career</p>
