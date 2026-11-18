@@ -1,4 +1,0 @@
-[
-  {"check": "hero-lines", "target": "section.hero h1", "reason": "The h1 is final at 9 Chinese characters on 2 lines. The stress test pads it to 45 characters sized for Latin text; full-width Chinese glyphs are twice as wide, so 45 of them can never fit 3 lines."},
-  {"check": "hero-maxchars", "target": "section.hero.hero--split", "reason": "Same stress test: a 45-character Chinese h1 is about twice the width the 45-character limit assumes. The real h1 (9 characters) ends well above the fold at every width."}
-]
