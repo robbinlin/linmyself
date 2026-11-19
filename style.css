@@ -100,7 +100,7 @@ ul, ol { list-style: none; }
 
 .hero__main {
   position: relative; flex: 1; display: grid; align-items: center;
-  grid-template-columns: minmax(0, 7fr) minmax(0, 4fr); column-gap: clamp(24px, 6vw, 96px);
+  grid-template-columns: minmax(0, 6fr) minmax(0, 5fr); column-gap: clamp(24px, 5vw, 80px);
   padding-block: clamp(32px, 6vh, 72px);
 }
 .hero__post { display: flex; flex-wrap: wrap; gap: 4px 1.4em; font-size: 15px; letter-spacing: 0.2em; color: var(--gold-deep); }
@@ -108,7 +108,7 @@ ul, ol { list-style: none; }
 .hero__name {
   display: flex; align-items: flex-start; gap: 0.12em;
   margin-top: 0.14em;
-  font: 400 clamp(76px, 12.6vw, 190px)/1 var(--serif-tc);
+  font: 400 clamp(76px, 11.4vw, 168px)/1 var(--serif-tc);
   letter-spacing: 0.02em; white-space: nowrap; color: var(--ink);
 }
 .hero__name .seal { font-size: clamp(13px, 1.5vw, 22px); margin-top: 0.7em; }
@@ -137,7 +137,38 @@ ul, ol { list-style: none; }
 .textlink:hover { color: var(--gold); gap: 16px; }
 .textlink svg { width: 16px; height: 16px; fill: none; stroke: currentColor; stroke-width: 1.4; }
 
-.portrait { position: relative; justify-self: end; width: min(100%, 400px); }
+/* 視差舞台：人像朝滑鼠轉動，光暈與卡片反向位移 */
+.stage { position: relative; justify-self: end; width: min(100%, 400px); margin-right: clamp(0px, 3vw, 44px); perspective: 1100px; }
+.stage > * { will-change: transform; }
+.halo { position: absolute; pointer-events: none; }
+.halo--glow { inset: -22% -30% -18% -30%; border-radius: 50%; background: radial-gradient(closest-side, rgba(253, 214, 140, 0.75), rgba(253, 214, 140, 0) 72%); }
+.halo--ring { width: 118%; aspect-ratio: 1; left: -30%; top: -12%; border-radius: 50%; border: 1.5px solid rgba(214, 180, 108, 0.75); }
+.halo--arc { width: 76%; aspect-ratio: 1; right: -30%; bottom: -8%; border-radius: 50%; border: 1px solid rgba(197, 57, 31, 0.5); border-left-color: transparent; border-top-color: transparent; }
+.halo--diamond { width: 30%; aspect-ratio: 1; right: -16%; top: -7%; border: 1.5px solid var(--gold); rotate: 45deg; }
+.halo--dot { width: 16px; height: 16px; left: -9%; bottom: 30%; background: var(--seal); rotate: 45deg; }
+.portrait { position: relative; width: 100%; transform-style: preserve-3d; }
+.facets { position: absolute; inset: 0; transform-style: preserve-3d; }
+.facet {
+  position: absolute; display: grid; grid-template-columns: auto 1fr; column-gap: 10px; align-items: baseline;
+  width: max-content; min-width: 156px; padding: 13px 18px 14px; text-decoration: none;
+  background: rgba(255, 251, 242, 0.94); color: var(--text); border: 1px solid rgba(214, 180, 108, 0.9); border-radius: 16px;
+  box-shadow: 0 22px 40px -22px rgba(14, 59, 53, 0.55);
+  transition: background-color 0.35s var(--ease), color 0.35s var(--ease), box-shadow 0.35s var(--ease), scale 0.35s var(--ease), opacity 0.35s var(--ease);
+}
+.facet__no { font: italic 400 20px/1 var(--serif); color: var(--gold-deep); }
+.facet__name { font: 400 24px/1.2 var(--serif-tc); letter-spacing: 0.12em; }
+.facet__note { grid-column: 1 / -1; margin-top: 4px; font-size: 13px; letter-spacing: 0.06em; color: var(--text-dim); }
+.facet--tl { left: -32%; top: 22%; }
+.facet--tr { right: -24%; top: 10%; }
+.facet--bl { left: -34%; bottom: 22%; }
+.facet--br { right: -12%; bottom: 5%; }
+.stage.has-active .facet:not(.is-active) { opacity: 0.72; }
+.facet.is-active, .facet:hover, .facet:focus-visible { background: var(--ink); color: var(--ivory); scale: 1.07; opacity: 1; box-shadow: 0 30px 50px -22px rgba(14, 59, 53, 0.8); }
+.facet.is-active .facet__no, .facet:hover .facet__no, .facet:focus-visible .facet__no { color: var(--gold); }
+.facet.is-active .facet__note, .facet:hover .facet__note, .facet:focus-visible .facet__note { color: var(--ivory-dim); }
+.js .facet { animation: fadein 0.8s var(--ease) both; }
+.js .facet--tl { animation-delay: 1.5s; } .js .facet--tr { animation-delay: 1.62s; } .js .facet--bl { animation-delay: 1.74s; } .js .facet--br { animation-delay: 1.86s; }
+.js .halo { animation: fadein 1.4s var(--ease) 0.9s both; }
 .portrait__frame { aspect-ratio: 4 / 5; overflow: hidden; border-radius: 28px; background: var(--paper-2); box-shadow: 0 40px 70px -40px rgba(14, 59, 53, 0.55); }
 .portrait__frame img { width: 100%; height: 124%; object-fit: cover; object-position: 88% 0; }
 .portrait::before {
@@ -263,7 +294,11 @@ ul, ol { list-style: none; }
 @media (max-width: 900px) {
   .hero__main { grid-template-columns: minmax(0, 1fr); row-gap: 40px; align-items: start; }
   .hero__name { font-size: clamp(76px, 21vw, 150px); }
-  .portrait { justify-self: start; width: min(78%, 340px); }
+  .stage { justify-self: start; width: min(100%, 420px); margin-right: 0; perspective: none; }
+  .halo--ring, .halo--arc, .halo--diamond, .halo--dot { display: none; }
+  .portrait { width: min(78%, 340px); }
+  .facets { position: static; display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 12px; margin-top: 34px; }
+  .facet { position: static; width: auto; min-width: 0; }
   .hero__curve { left: 0; width: 100%; bottom: 190px; height: 30vh; }
   .sec__head { grid-template-columns: minmax(0, 1fr); row-gap: 14px; }
   .sec__note { grid-column: 1; }
@@ -333,7 +368,8 @@ body::after {
 .js .hero__cta { animation-delay: 1.05s; }
 .js .portrait__frame { clip-path: inset(100% 0 0 0 round 28px); animation: unveil 1.4s var(--ease) 0.45s forwards; }
 .js .portrait__frame img { transform: scale(1.14); animation: settle 2.2s var(--ease) 0.45s forwards; }
-.js .portrait::before { opacity: 0; animation: fadein 1.2s var(--ease) 1.3s forwards; }
+.js .portrait::before { animation: fadein 1.2s var(--ease) 1.3s both; }
+@keyframes fadein { from { opacity: 0; } }
 .js .hero__facts li { opacity: 0; transform: translateY(12px); animation: fadeup 0.8s var(--ease) forwards; }
 .js .hero__facts li:nth-child(1) { animation-delay: 1.2s; }
 .js .hero__facts li:nth-child(2) { animation-delay: 1.32s; }
@@ -341,7 +377,6 @@ body::after {
 @keyframes rise { to { transform: none; } }
 @keyframes stamp { 60% { opacity: 1; transform: scale(0.94) rotate(0deg); } 100% { opacity: 1; transform: none; } }
 @keyframes fadeup { to { opacity: 1; transform: none; } }
-@keyframes fadein { to { opacity: 1; } }
 @keyframes unveil { to { clip-path: inset(0 0 0 0 round 28px); } }
 @keyframes settle { to { transform: none; } }
 

@@ -79,3 +79,55 @@
     i.addEventListener('focusin', () => show(i.dataset.key));
   });
 })();
+
+// 滑鼠視差：人像朝滑鼠轉向四個面向，光暈與卡片反向位移並帶 3D 傾斜
+(() => {
+  const stage = document.querySelector('[data-parallax]');
+  const hero = document.querySelector('.hero');
+  if (!stage || !hero) return;
+  const fine = matchMedia('(hover: hover) and (pointer: fine)').matches;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  if (!fine || reduce || innerWidth <= 900) return;
+
+  const portrait = stage.querySelector('.portrait');
+  const halos = [...stage.querySelectorAll('.halo')].map(el => ({ el, d: +el.dataset.depth }));
+  const facets = [...stage.querySelectorAll('.facet')].map(el => ({ el, d: +el.dataset.depth, key: el.dataset.facet }));
+  const target = { x: 0, y: 0 }, cur = { x: 0, y: 0 };
+  let raf = 0, forced = null, active = null;
+
+  const setActive = key => {
+    if (key === active) return; active = key;
+    facets.forEach(f => f.el.classList.toggle('is-active', f.key === key));
+    stage.classList.toggle('has-active', !!key);
+  };
+  const pick = () => {
+    if (forced) return forced;
+    if (Math.hypot(target.x, target.y) < 0.22) return null;   // 中央留一塊不偏向任何面向
+    return (target.y < 0 ? 't' : 'b') + (target.x < 0 ? 'l' : 'r');
+  };
+
+  const frame = () => {
+    cur.x += (target.x - cur.x) * 0.085;
+    cur.y += (target.y - cur.y) * 0.085;
+    const { x, y } = cur;
+    portrait.style.transform = `translate3d(${(x * 12).toFixed(2)}px, ${(y * 9).toFixed(2)}px, 0) rotateY(${(x * 17).toFixed(2)}deg) rotateX(${(-y * 12).toFixed(2)}deg)`;
+    for (const h of halos) h.el.style.transform = `translate3d(${(-x * h.d).toFixed(2)}px, ${(-y * h.d * 0.8).toFixed(2)}px, 0)`;
+    for (const f of facets) f.el.style.transform = `translate3d(${(-x * f.d).toFixed(2)}px, ${(-y * f.d * 0.8).toFixed(2)}px, 70px) rotateY(${(-x * 11).toFixed(2)}deg) rotateX(${(y * 9).toFixed(2)}deg)`;
+    raf = (Math.abs(target.x - x) + Math.abs(target.y - y) > 0.0015) ? requestAnimationFrame(frame) : 0;   // 靜止後停止
+  };
+  const kick = () => { if (!raf) raf = requestAnimationFrame(frame); };
+
+  hero.addEventListener('pointermove', e => {
+    const r = hero.getBoundingClientRect();
+    target.x = Math.max(-1, Math.min(1, ((e.clientX - r.left) / r.width - 0.5) * 2));
+    target.y = Math.max(-1, Math.min(1, ((e.clientY - r.top) / r.height - 0.5) * 2));
+    setActive(pick()); kick();
+  }, { passive: true });
+  hero.addEventListener('pointerleave', () => { target.x = 0; target.y = 0; forced = null; setActive(null); kick(); });
+  facets.forEach(f => {
+    f.el.addEventListener('pointerenter', () => { forced = f.key; setActive(f.key); });
+    f.el.addEventListener('pointerleave', () => { forced = null; setActive(pick()); });
+    f.el.addEventListener('focus', () => { forced = f.key; setActive(f.key); target.x = f.key[1] === 'l' ? -0.7 : 0.7; target.y = f.key[0] === 't' ? -0.7 : 0.7; kick(); });
+    f.el.addEventListener('blur', () => { forced = null; target.x = 0; target.y = 0; setActive(null); kick(); });
+  });
+})();
