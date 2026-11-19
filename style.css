@@ -90,10 +90,19 @@ ul, ol { list-style: none; }
 .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; overflow: hidden; padding-top: 68px;
   background: radial-gradient(90% 70% at 88% 8%, #fde3b4 0%, rgba(253, 227, 180, 0) 60%), radial-gradient(70% 60% at 0% 100%, #f6dccb 0%, rgba(246, 220, 203, 0) 60%), var(--paper); }
 .hero :focus-visible { outline-color: var(--gold-deep); }
-.hero__curve { position: absolute; left: 14vw; bottom: 101px; width: 130vw; height: min(52vh, 470px); pointer-events: none; }
+.hero__curve { position: absolute; left: 0; bottom: 101px; width: 100%; height: min(15vh, 132px); pointer-events: none; }
 .hero__curve path { fill: none; stroke: var(--gold-deep); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
 .hero__curve .axis { stroke: var(--paper-line); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .hero__curve .tick { stroke: rgba(141, 107, 31, 0.3); stroke-width: 1; stroke-dasharray: 2 5; vector-effect: non-scaling-stroke; }
+.hero__curve .area { stroke: none; fill: rgba(214, 180, 108, 0.3); }
+/* 可以讀的曲線：標記貼在線上，旁邊是 z 分數與百分位 */
+.zread { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; opacity: 0; transition: opacity 150ms ease-in; will-change: transform; }
+.zread.is-on { opacity: 1; transition: opacity 200ms ease-out; }
+.zread__dot { position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; background: var(--seal); rotate: 45deg; box-shadow: 0 0 0 4px rgba(248, 241, 227, 0.9); }
+.zread__label { position: absolute; left: 0; bottom: 18px; translate: -50% 0; display: flex; align-items: baseline; gap: 10px; white-space: nowrap; padding: 6px 14px 7px; background: var(--ink); color: var(--ivory); border-radius: 999px; font-size: 13px; letter-spacing: 0.08em; }
+.zread__label b { font-weight: 500; font-size: 19px; color: var(--gold); letter-spacing: 0.02em; }
+.zread.is-left .zread__label { translate: -12% 0; }
+.zread.is-right .zread__label { translate: -88% 0; }
 .hero__curve .draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
 .js .hero__curve .draw { stroke-dashoffset: 1; animation: draw 2.8s var(--ease) 0.9s forwards; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
@@ -266,6 +275,73 @@ ul, ol { list-style: none; }
 .career__photo { margin-bottom: 28px; aspect-ratio: 4 / 3; overflow: hidden; }
 .career__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 80% 50%; }
 
+/* ---------- 經歷時間軸 ---------- */
+.tl { margin-bottom: clamp(36px, 6vh, 60px); }
+.tl__rows { display: grid; gap: 7px; padding: 14px 0; border-top: 1px solid var(--ink-line); border-bottom: 1px solid var(--ink-line); }
+.tl__bar {
+  display: block; height: 14px; padding: 0; border: 0; border-radius: 7px; cursor: pointer;
+  width: calc(var(--w) * 100%); margin-left: calc(var(--s) * 100%);
+  background: rgba(214, 180, 108, 0.55); transform-origin: left center;
+  transition: background-color 150ms ease-out, opacity 150ms ease-out, box-shadow 150ms ease-out;
+}
+.tl__bar:hover, .tl__bar:focus-visible, .tl__bar.is-hot { background: var(--gold); box-shadow: 0 0 0 3px rgba(214, 180, 108, 0.25); }
+.tl__bar:active { background: var(--ivory); }
+.tl.has-hot .tl__bar:not(.is-hot):not(:hover) { opacity: 0.4; }
+.tl__axis { position: relative; height: 26px; font-size: 17px; color: var(--ivory-dim); }
+.tl__axis span { position: absolute; left: calc(var(--s) * 100%); top: 6px; translate: -50% 0; }
+.tl__axis span:first-child { translate: 0 0; }
+.tl__cap { min-height: 1.9em; margin-top: 4px; font: 400 20px/1.6 var(--serif-tc); letter-spacing: 0.08em; color: var(--gold); }
+.js .tl.reveal .tl__bar { transform: scaleX(0.02); opacity: 0; transition: transform 600ms var(--ease), opacity 300ms ease-out, background-color 150ms ease-out, box-shadow 150ms ease-out; transition-delay: calc(var(--i, 0) * 70ms), calc(var(--i, 0) * 70ms), 0ms, 0ms; }
+.js .tl.reveal.is-in .tl__bar { transform: none; opacity: 1; }
+.js .tl.reveal.is-in.has-hot .tl__bar:not(.is-hot):not(:hover) { opacity: 0.4; }
+.cv li, .career__side p[data-tl] { transition: opacity 150ms ease-out; }
+.career.has-hot .cv li:not(.is-hot), .career.has-hot .career__side p[data-tl]:not(.is-hot) { opacity: 0.45; }
+.cv li.is-hot .cv__role, .career__side p.is-hot { color: var(--gold); }
+
+/* ---------- 著作搜尋與篩選 ---------- */
+.finder { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 7fr); gap: 20px clamp(24px, 4vw, 56px); align-items: end; margin-bottom: 8px; }
+.finder__field label { display: block; margin-bottom: 8px; font-size: 14px; letter-spacing: 0.14em; color: var(--text-dim); }
+.finder__field input {
+  width: 100%; height: 52px; padding: 0 18px; font: 400 18px/1 var(--sans); color: var(--text);
+  background: rgba(255, 251, 242, 0.9); border: 1px solid #8a8c80; border-radius: 12px;
+  transition: border-color 150ms ease-out, box-shadow 150ms ease-out;
+}
+.finder__field input::placeholder { color: #6b6d62; }
+.finder__field input:hover { border-color: var(--gold-deep); }
+.finder__field input:focus-visible { outline: none; border-color: var(--ink); box-shadow: 0 0 0 3px rgba(14, 59, 53, 0.22); }
+.finder__years { display: flex; flex-wrap: wrap; gap: 8px; }
+.chip {
+  min-width: 52px; height: 44px; padding: 0 14px; font: 500 19px/1 var(--serif); letter-spacing: 0.02em; color: var(--text); cursor: pointer;
+  background: transparent; border: 1px solid #8a8c80; border-radius: 999px;
+  transition: background-color 150ms ease-out, color 150ms ease-out, border-color 150ms ease-out, transform 100ms ease-out;
+}
+.chip[data-year=""] { font: 400 15px/1 var(--sans); letter-spacing: 0.1em; }
+.chip:hover { border-color: var(--gold-deep); }
+.chip:active { transform: scale(0.96); }
+.chip.is-on { background: var(--ink); border-color: var(--ink); color: var(--ivory); }
+.chip:disabled { opacity: 0.4; cursor: default; }
+.finder__count { grid-column: 1 / -1; font-size: 15px; letter-spacing: 0.08em; color: var(--text-dim); }
+.finder__empty { margin-top: 48px; font: 400 24px/1.6 var(--serif-tc); color: var(--text-dim); }
+.publist { view-transition-name: publist; }
+.publist [hidden] { display: none !important; }
+html.vt-filter::view-transition-old(root), html.vt-filter::view-transition-new(root) { animation: none; }
+::view-transition-old(publist) { animation: vt-fade-out 150ms ease-in both; }
+::view-transition-new(publist) { animation: vt-fade-in 240ms ease-out both; }
+@keyframes vt-fade-out { to { opacity: 0; } }
+@keyframes vt-fade-in { from { opacity: 0; } }
+
+/* ---------- 複製信箱 ---------- */
+.copybtn {
+  display: inline-flex; align-items: center; min-height: 50px; padding: 0 24px; cursor: pointer;
+  font: 500 15px/1.4 var(--sans); letter-spacing: 0.16em; color: var(--ivory); background: transparent;
+  border: 1px solid rgba(248, 240, 220, 0.5); transition: border-color 150ms ease-out, color 150ms ease-out, background-color 150ms ease-out, transform 100ms ease-out;
+}
+.copybtn:hover { border-color: var(--gold); color: var(--gold); }
+.copybtn:active { transform: translateY(1px); }
+.copybtn:disabled { opacity: 0.5; cursor: default; }
+.copybtn.is-done { background: var(--ivory); border-color: var(--ivory); color: var(--ink); }
+.copybtn__status { font: 400 17px/1.4 var(--sans); letter-spacing: 0.04em; color: var(--gold); user-select: all; }
+
 /* ---------- 聯絡 ---------- */
 .contact { position: relative; z-index: 1; background: var(--ink); color: var(--ivory); border-top: 1px solid var(--ink-line); padding-block: clamp(90px, 16vh, 170px) 0; overflow: hidden; }
 .contact__quote { font: 400 clamp(30px, 4.8vw, 66px)/1.45 var(--serif-tc); letter-spacing: 0.05em; max-width: 17em; }
@@ -317,6 +393,9 @@ ul, ol { list-style: none; }
   .nav__links a { font-size: 14px; letter-spacing: 0.06em; }
   .nav__brand { font-size: 19px; letter-spacing: 0.06em; gap: 8px; }
   .contact__curve { left: 0; width: 100%; height: 18vh; bottom: 168px; opacity: 0.4; }
+  .finder { grid-template-columns: minmax(0, 1fr); }
+  .tl__axis span:nth-child(even) { display: none; }
+  .copybtn { width: 100%; justify-content: center; }
   .fields { grid-template-columns: minmax(0, 1fr); }
   .field, .field + .field { padding: 22px 0; border-left: 0; }
   .field + .field { border-top: 1px solid var(--ink-line); }
@@ -341,6 +420,9 @@ body::after {
 
 /* ---------- 流動字帶 ---------- */
 .band { position: relative; z-index: 1; overflow: hidden; background: var(--ink-2); border-top: 1px solid var(--ink-line); border-bottom: 1px solid var(--ink-line); padding: clamp(18px, 3vh, 34px) 0; }
+.band { cursor: grab; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
+.band.is-drag { cursor: grabbing; }
+.band.is-js .band__track { animation: none; will-change: transform; }
 .band__track { display: flex; align-items: center; width: max-content; gap: clamp(28px, 4vw, 64px); padding-right: clamp(28px, 4vw, 64px); animation: band 46s linear infinite; }
 .band:hover .band__track { animation-play-state: paused; }
 .band span { font: italic 400 clamp(44px, 7vw, 104px)/1.1 var(--serif); white-space: nowrap; color: transparent; -webkit-text-stroke: 1px rgba(214, 180, 108, 0.8); }
@@ -424,5 +506,7 @@ body::after {
   .js .hero__curve .draw, .js .contact__curve.reveal .draw { stroke-dashoffset: 0 !important; }
   .hero.is-pinned { position: relative; }
   .band__track { animation: none !important; }
+  .js .tl.reveal .tl__bar { transform: none !important; opacity: 1 !important; }
+  ::view-transition-old(publist), ::view-transition-new(publist) { animation: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
