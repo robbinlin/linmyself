@@ -40,6 +40,15 @@
   </div>
   <section class="sec sec--paper" style="padding-top: 24px">
     <div class="wrap">
+      <form class="finder" role="search" onsubmit="return false">
+        <div class="finder__field">
+          <label for="q">搜尋著作</label>
+          <input id="q" name="q" type="search" autocomplete="off" spellcheck="false" placeholder="例如 sarcopenia、marathon">
+        </div>
+        <div class="finder__years" role="group" aria-label="依年份篩選"><button class="chip is-on" type="button" data-year="" aria-pressed="true">全部</button><button class="chip num" type="button" data-year="2026" aria-pressed="false">2026</button><button class="chip num" type="button" data-year="2025" aria-pressed="false">2025</button><button class="chip num" type="button" data-year="2024" aria-pressed="false">2024</button><button class="chip num" type="button" data-year="2023" aria-pressed="false">2023</button><button class="chip num" type="button" data-year="2022" aria-pressed="false">2022</button><button class="chip num" type="button" data-year="2021" aria-pressed="false">2021</button><button class="chip num" type="button" data-year="2020" aria-pressed="false">2020</button><button class="chip num" type="button" data-year="2019" aria-pressed="false">2019</button><button class="chip num" type="button" data-year="2018" aria-pressed="false">2018</button></div>
+        <p class="finder__count" role="status" aria-live="polite">共 27 篇</p>
+      </form>
+      <div class="publist">
       <h2 class="year-head num reveal">2026</h2>
       <ul class="pubs reveal" data-stagger>
         <li class="pub"><div><p class="pub__title" lang="en">Machine Learning Approaches to Identify Physical, Psychological, and Social Predictors of Worsening Frailty Transitions Among Community-Dwelling Older Adults: A Longitudinal Study</p><p class="pub__src">IH Chen, TP Yeh, YH Tang, FL Kuo, CH Chen, YK Lin　<i>Geriatrics &amp; Gerontology International 26 (4), e70467</i></p></div></li>
@@ -94,6 +103,8 @@
         <li class="pub"><div><p class="pub__title" lang="en">Physical activity of Chinese American immigrants with type 2 diabetes/prediabetes: a mixed method study</p><p class="pub__src">M Fu, S Liu, YK Lin, WY Chan　<i>The American journal of nursing 118 (2), 24</i></p></div></li>
         <li class="pub"><div><p class="pub__title" lang="en">Social support and factors associated with self-efficacy among acute-care nurse practitioners</p><p class="pub__src">SH Hu, YM Yu, WY Chang, YK Lin　<i>Journal of clinical nursing 27 (3-4), 876-882</i></p></div></li>
       </ul>
+        <p class="finder__empty" hidden>沒有符合的著作，換個關鍵字試試。</p>
+      </div>
     </div>
   </section>
 </main>
@@ -104,7 +115,9 @@
     <p class="contact__quote reveal"><span class="mask"><span>熱愛資料科學，</span></span><span class="mask"><span>不怕清資料清到<em>髒兮兮</em>。</span></span></p>
     <div class="contact__row reveal">
       <a class="btn" href="mailto:robbinlin@ntsu.edu.tw">寄信給林彥光<svg viewBox="0 0 16 16" aria-hidden="true"><path d="M1 8h13M9.5 3.5 14 8l-4.5 4.5"/></svg></a>
+      <button class="copybtn" type="button" data-copy="robbinlin@ntsu.edu.tw" data-label="複製信箱" data-done="已複製"><span class="copybtn__text">複製信箱</span></button>
       <span class="contact__who">歡迎與本實驗室聯繫</span>
+      <span class="copybtn__status" role="status" aria-live="polite"></span>
     </div>
     <div class="foot">
       <span class="foot__brand"><span class="seal" aria-hidden="true">彥光</span>林彥光</span>

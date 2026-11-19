@@ -131,3 +131,148 @@
     f.el.addEventListener('blur', () => { forced = null; target.x = 0; target.y = 0; setActive(null); kick(); });
   });
 })();
+
+// 可以讀的鐘形曲線：滑鼠橫移時，標記貼在曲線上，讀出 z 分數與百分位
+(() => {
+  const hero = document.querySelector('.hero');
+  const svg = document.querySelector('.hero__curve');
+  const read = document.querySelector('.zread');
+  if (!hero || !svg || !read) return;
+  if (!matchMedia('(hover: hover) and (pointer: fine)').matches || innerWidth <= 900) return;
+  const area = svg.querySelector('.area'), big = read.querySelector('b'), small = read.querySelector('.zread__label span');
+  const Z = 3.5, W = 1200, BASE = 292, PEAK = 262;
+  const y = z => BASE - PEAK * Math.exp(-z * z / 2);
+  // 標準常態累積機率（Abramowitz–Stegun 近似，誤差小於 1e-7）
+  const cdf = z => {
+    const t = 1 / (1 + 0.2316419 * Math.abs(z)), d = 0.3989422804014327 * Math.exp(-z * z / 2);
+    const p = d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
+    return z >= 0 ? 1 - p : p;
+  };
+  let px = 0, queued = false, on = false;
+  const draw = () => {
+    queued = false;
+    const r = svg.getBoundingClientRect(), h = hero.getBoundingClientRect();
+    const u = Math.max(0, Math.min(1, (px - r.left) / r.width)), z = -Z + 2 * Z * u;
+    read.style.transform = `translate3d(${(r.left - h.left + u * r.width).toFixed(1)}px, ${(r.top - h.top + y(z) / 300 * r.height).toFixed(1)}px, 0)`;
+    let d = `M0,${BASE}`;
+    for (let i = 0, n = Math.max(1, Math.round(u * 140)); i <= n; i++) { const zi = -Z + (z + Z) * i / n; d += ` L${((zi + Z) / (2 * Z) * W).toFixed(1)},${y(zi).toFixed(1)}`; }
+    area.setAttribute('d', d + ` L${(u * W).toFixed(1)},${BASE} Z`);
+    const pct = cdf(z) * 100;
+    big.textContent = 'z = ' + (z >= 0 ? '+' : '−') + Math.abs(z).toFixed(2);
+    small.textContent = '第 ' + (pct < 1 ? pct.toFixed(1) : pct > 99 ? pct.toFixed(1) : Math.round(pct)) + ' 百分位';
+    read.classList.toggle('is-left', u < 0.08); read.classList.toggle('is-right', u > 0.92);
+  };
+  hero.addEventListener('pointermove', e => {
+    px = e.clientX;
+    if (!on) { on = true; read.classList.add('is-on'); }
+    if (!queued) { queued = true; requestAnimationFrame(draw); }
+  }, { passive: true });
+  hero.addEventListener('pointerleave', () => { on = false; read.classList.remove('is-on'); area.setAttribute('d', ''); });
+})();
+
+// 經歷時間軸：橫槓與清單互相亮起
+(() => {
+  const tl = document.querySelector('.tl'), career = document.querySelector('.career');
+  if (!tl || !career) return;
+  const bars = [...tl.querySelectorAll('.tl__bar')], rows = [...career.querySelectorAll('[data-tl]')], cap = tl.querySelector('.tl__cap span');
+  bars.forEach((b, i) => b.style.setProperty('--i', i));
+  const idle = cap.textContent;
+  const hot = key => {
+    bars.forEach(b => b.classList.toggle('is-hot', b.dataset.tl === key));
+    rows.forEach(r => r.classList.toggle('is-hot', r.dataset.tl === key));
+    tl.classList.toggle('has-hot', !!key); career.classList.toggle('has-hot', !!key);
+    const b = bars.find(x => x.dataset.tl === key);
+    cap.textContent = b ? b.dataset.cap : idle;
+  };
+  [...bars, ...rows].forEach(el => {
+    el.addEventListener('pointerenter', () => hot(el.dataset.tl));
+    el.addEventListener('pointerleave', () => hot(null));
+    el.addEventListener('focus', () => hot(el.dataset.tl));
+    el.addEventListener('blur', () => hot(null));
+  });
+  // 觸控：點橫槓捲到對應的那一列
+  bars.forEach(b => b.addEventListener('click', () => {
+    hot(b.dataset.tl);
+    const row = rows.find(r => r.dataset.tl === b.dataset.tl);
+    if (row) row.scrollIntoView({ block: 'nearest', behavior: matchMedia('(prefers-reduced-motion: reduce)').matches ? 'auto' : 'smooth' });
+  }));
+})();
+
+// 著作搜尋與年份篩選
+(() => {
+  const form = document.querySelector('.finder'), list = document.querySelector('.publist');
+  if (!form || !list) return;
+  const input = form.querySelector('input'), chips = [...form.querySelectorAll('.chip')], count = form.querySelector('.finder__count'), empty = list.querySelector('.finder__empty');
+  const groups = [...list.querySelectorAll('.year-head')].map(h => ({ h, ul: h.nextElementSibling, year: h.textContent.trim(), items: [...h.nextElementSibling.children].map(li => ({ li, text: li.textContent.toLowerCase() })) }));
+  const total = groups.reduce((n, g) => n + g.items.length, 0);
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let year = '';
+  const apply = () => {
+    const q = input.value.trim().toLowerCase();
+    let n = 0;
+    for (const g of groups) {
+      let shown = 0;
+      for (const it of g.items) { const ok = (!year || g.year === year) && (!q || it.text.includes(q)); it.li.hidden = !ok; if (ok) shown++; }
+      g.h.hidden = g.ul.hidden = !shown; n += shown;
+      if (shown) { g.h.classList.add('is-in'); g.ul.classList.add('is-in'); }   // 篩出來的直接顯示，不等捲動進場
+    }
+    empty.hidden = n > 0;
+    count.textContent = (q || year) ? `符合 ${n} 篇，共 ${total} 篇` : `共 ${total} 篇`;
+  };
+  const run = () => {
+    if (reduce || !document.startViewTransition) return apply();
+    document.documentElement.classList.add('vt-filter');
+    document.startViewTransition(apply).finished.finally(() => document.documentElement.classList.remove('vt-filter'));
+  };
+  let timer = 0;
+  input.addEventListener('input', () => { clearTimeout(timer); timer = setTimeout(run, 120); });
+  chips.forEach(c => c.addEventListener('click', () => {
+    year = c.dataset.year;
+    chips.forEach(x => { const on = x === c; x.classList.toggle('is-on', on); x.setAttribute('aria-pressed', on); });
+    run();
+  }));
+})();
+
+// 字帶：可拖曳，放開後帶慣性回到原本的速度；滑鼠停在上面會停
+(() => {
+  const band = document.querySelector('.band'), track = band && band.querySelector('.band__track');
+  if (!band || matchMedia('(prefers-reduced-motion: reduce)').matches) return;
+  band.classList.add('is-js');
+  const BASE = -42;                       // 每秒位移（px），向左
+  let x = 0, v = BASE, target = BASE, half = track.scrollWidth / 2, last = 0, raf = 0, visible = false;
+  let drag = false, lastX = 0, lastT = 0;
+  const wrap = () => { if (x <= -half) x += half; else if (x > 0) x -= half; };
+  const frame = now => {
+    const dt = Math.min(0.05, (now - last) / 1000 || 0); last = now;
+    if (!drag) { v += (target - v) * Math.min(1, dt * 3.2); x += v * dt; wrap(); }
+    track.style.transform = `translate3d(${x.toFixed(1)}px, 0, 0)`;
+    raf = visible ? requestAnimationFrame(frame) : 0;
+  };
+  new IntersectionObserver(es => { visible = es[0].isIntersecting; if (visible && !raf) { last = performance.now(); raf = requestAnimationFrame(frame); } }).observe(band);
+  addEventListener('resize', () => { half = track.scrollWidth / 2; });
+  band.addEventListener('pointerenter', e => { if (e.pointerType === 'mouse') target = 0; });
+  band.addEventListener('pointerleave', () => { if (!drag) target = BASE; });
+  band.addEventListener('pointerdown', e => { drag = true; lastX = e.clientX; lastT = performance.now(); v = 0; band.classList.add('is-drag'); band.setPointerCapture(e.pointerId); });
+  band.addEventListener('pointermove', e => {
+    if (!drag) return;
+    const now = performance.now(), dx = e.clientX - lastX;
+    x += dx; wrap(); v = dx / Math.max(0.001, (now - lastT) / 1000); lastX = e.clientX; lastT = now;
+  });
+  const end = e => { if (!drag) return; drag = false; band.classList.remove('is-drag'); v = Math.max(-2600, Math.min(2600, v)); target = e.pointerType === 'mouse' && band.matches(':hover') ? 0 : BASE; };
+  band.addEventListener('pointerup', end); band.addEventListener('pointercancel', end);
+})();
+
+// 複製信箱
+(() => {
+  document.querySelectorAll('.copybtn').forEach(btn => {
+    const text = btn.querySelector('.copybtn__text'), status = btn.parentElement.querySelector('.copybtn__status');
+    let timer = 0;
+    btn.addEventListener('click', async () => {
+      try {
+        await navigator.clipboard.writeText(btn.dataset.copy);
+        btn.classList.add('is-done'); text.textContent = btn.dataset.done; status.textContent = '';
+        clearTimeout(timer); timer = setTimeout(() => { btn.classList.remove('is-done'); text.textContent = btn.dataset.label; }, 1600);
+      } catch { status.textContent = btn.dataset.copy; }   // 瀏覽器不給複製時，直接把信箱顯示出來讓人選取
+    });
+  });
+})();
