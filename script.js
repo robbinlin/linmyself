@@ -132,44 +132,6 @@
   });
 })();
 
-// 可以讀的鐘形曲線：滑鼠橫移時，標記貼在曲線上，讀出 z 分數與百分位
-(() => {
-  const hero = document.querySelector('.hero');
-  const svg = document.querySelector('.hero__curve');
-  const read = document.querySelector('.zread');
-  if (!hero || !svg || !read) return;
-  if (!matchMedia('(hover: hover) and (pointer: fine)').matches || innerWidth <= 900) return;
-  const area = svg.querySelector('.area'), big = read.querySelector('b'), small = read.querySelector('.zread__label span');
-  const Z = 3.5, W = 1200, BASE = 292, PEAK = 262;
-  const y = z => BASE - PEAK * Math.exp(-z * z / 2);
-  // 標準常態累積機率（Abramowitz–Stegun 近似，誤差小於 1e-7）
-  const cdf = z => {
-    const t = 1 / (1 + 0.2316419 * Math.abs(z)), d = 0.3989422804014327 * Math.exp(-z * z / 2);
-    const p = d * t * (0.319381530 + t * (-0.356563782 + t * (1.781477937 + t * (-1.821255978 + t * 1.330274429))));
-    return z >= 0 ? 1 - p : p;
-  };
-  let px = 0, queued = false, on = false;
-  const draw = () => {
-    queued = false;
-    const r = svg.getBoundingClientRect(), h = hero.getBoundingClientRect();
-    const u = Math.max(0, Math.min(1, (px - r.left) / r.width)), z = -Z + 2 * Z * u;
-    read.style.transform = `translate3d(${(r.left - h.left + u * r.width).toFixed(1)}px, ${(r.top - h.top + y(z) / 300 * r.height).toFixed(1)}px, 0)`;
-    let d = `M0,${BASE}`;
-    for (let i = 0, n = Math.max(1, Math.round(u * 140)); i <= n; i++) { const zi = -Z + (z + Z) * i / n; d += ` L${((zi + Z) / (2 * Z) * W).toFixed(1)},${y(zi).toFixed(1)}`; }
-    area.setAttribute('d', d + ` L${(u * W).toFixed(1)},${BASE} Z`);
-    const pct = cdf(z) * 100;
-    big.textContent = 'z = ' + (z >= 0 ? '+' : '−') + Math.abs(z).toFixed(2);
-    small.textContent = '第 ' + (pct < 1 ? pct.toFixed(1) : pct > 99 ? pct.toFixed(1) : Math.round(pct)) + ' 百分位';
-    read.classList.toggle('is-left', u < 0.08); read.classList.toggle('is-right', u > 0.92);
-  };
-  hero.addEventListener('pointermove', e => {
-    px = e.clientX;
-    if (!on) { on = true; read.classList.add('is-on'); }
-    if (!queued) { queued = true; requestAnimationFrame(draw); }
-  }, { passive: true });
-  hero.addEventListener('pointerleave', () => { on = false; read.classList.remove('is-on'); area.setAttribute('d', ''); });
-})();
-
 // 經歷時間軸：橫槓與清單互相亮起
 (() => {
   const tl = document.querySelector('.tl'), career = document.querySelector('.career');
