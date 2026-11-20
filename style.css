@@ -90,19 +90,10 @@ ul, ol { list-style: none; }
 .hero { position: relative; min-height: 100svh; display: flex; flex-direction: column; overflow: hidden; padding-top: 68px;
   background: radial-gradient(90% 70% at 88% 8%, #fde3b4 0%, rgba(253, 227, 180, 0) 60%), radial-gradient(70% 60% at 0% 100%, #f6dccb 0%, rgba(246, 220, 203, 0) 60%), var(--paper); }
 .hero :focus-visible { outline-color: var(--gold-deep); }
-.hero__curve { position: absolute; left: 0; bottom: 101px; width: 100%; height: min(15vh, 132px); pointer-events: none; }
+.hero__curve { position: absolute; left: 14vw; bottom: 101px; width: 130vw; height: min(52vh, 470px); pointer-events: none; }
 .hero__curve path { fill: none; stroke: var(--gold-deep); stroke-width: 1.2; vector-effect: non-scaling-stroke; }
 .hero__curve .axis { stroke: var(--paper-line); stroke-width: 1; vector-effect: non-scaling-stroke; }
 .hero__curve .tick { stroke: rgba(141, 107, 31, 0.3); stroke-width: 1; stroke-dasharray: 2 5; vector-effect: non-scaling-stroke; }
-.hero__curve .area { stroke: none; fill: rgba(214, 180, 108, 0.3); }
-/* 可以讀的曲線：標記貼在線上，旁邊是 z 分數與百分位 */
-.zread { position: absolute; left: 0; top: 0; z-index: 3; pointer-events: none; opacity: 0; transition: opacity 150ms ease-in; will-change: transform; }
-.zread.is-on { opacity: 1; transition: opacity 200ms ease-out; }
-.zread__dot { position: absolute; left: -6px; top: -6px; width: 12px; height: 12px; background: var(--seal); rotate: 45deg; box-shadow: 0 0 0 4px rgba(248, 241, 227, 0.9); }
-.zread__label { position: absolute; left: 0; bottom: 18px; translate: -50% 0; display: flex; align-items: baseline; gap: 10px; white-space: nowrap; padding: 6px 14px 7px; background: var(--ink); color: var(--ivory); border-radius: 999px; font-size: 13px; letter-spacing: 0.08em; }
-.zread__label b { font-weight: 500; font-size: 19px; color: var(--gold); letter-spacing: 0.02em; }
-.zread.is-left .zread__label { translate: -12% 0; }
-.zread.is-right .zread__label { translate: -88% 0; }
 .hero__curve .draw { stroke-dasharray: 1; stroke-dashoffset: 0; }
 .js .hero__curve .draw { stroke-dashoffset: 1; animation: draw 2.8s var(--ease) 0.9s forwards; }
 @keyframes draw { to { stroke-dashoffset: 0; } }
