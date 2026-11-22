@@ -170,7 +170,7 @@ ul, ol { list-style: none; }
 .js .facet--tl { animation-delay: 1.5s; } .js .facet--tr { animation-delay: 1.62s; } .js .facet--bl { animation-delay: 1.74s; } .js .facet--br { animation-delay: 1.86s; }
 .js .halo { animation: fadein 1.4s var(--ease) 0.9s both; }
 .portrait__frame { aspect-ratio: 4 / 5; overflow: hidden; border-radius: 28px; background: var(--paper-2); box-shadow: 0 40px 70px -40px rgba(14, 59, 53, 0.55); }
-.portrait__frame img { width: 100%; height: 124%; object-fit: cover; object-position: 88% 0; }
+.portrait__frame img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 30%; }
 .portrait::before {
   content: ""; position: absolute; inset: 14px -14px -14px 14px; border: 1.5px solid var(--gold); border-radius: 28px; pointer-events: none; z-index: -1;
 }
@@ -379,6 +379,15 @@ html.vt-filter::view-transition-old(root), html.vt-filter::view-transition-new(r
 .copybtn.is-done { background: var(--ivory); border-color: var(--ivory); color: var(--ink); }
 .copybtn__status { font: 400 17px/1.4 var(--sans); letter-spacing: 0.04em; color: var(--gold); user-select: all; }
 
+/* ---------- 講台之外 ---------- */
+.life { display: grid; grid-template-columns: minmax(0, 16fr) minmax(0, 5fr) minmax(0, 5fr); gap: clamp(12px, 1.6vw, 22px); }
+.life__item { overflow: hidden; border-radius: 22px; background: var(--paper-2); box-shadow: 0 30px 50px -34px rgba(14, 59, 53, 0.5); }
+.life__item--wide { aspect-ratio: 16 / 9; }
+.life__item img { width: 100%; height: 100%; object-fit: cover; transition: transform 700ms var(--ease); }
+.life__item:nth-child(2) img { object-position: 52% 50%; }
+.life__item:nth-child(3) img { object-position: 45% 30%; }
+.life__item:hover img { transform: scale(1.04); }
+
 /* ---------- 聯絡 ---------- */
 .contact { position: relative; z-index: 1; background: var(--ink); color: var(--ivory); border-top: 1px solid var(--ink-line); padding-block: clamp(90px, 16vh, 170px) 0; overflow: hidden; }
 .contact__quote { font: 400 clamp(30px, 4.8vw, 66px)/1.45 var(--serif-tc); letter-spacing: 0.05em; max-width: 17em; }
@@ -420,6 +429,9 @@ html.vt-filter::view-transition-old(root), html.vt-filter::view-transition-new(r
   .course__thumb { display: block; grid-column: 2 / -1; margin-top: 16px; aspect-ratio: 16 / 10; overflow: hidden; }
   .course__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
   .tools, .talks { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
+  .life { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .life__item--wide { grid-column: 1 / -1; }
+  .life__item:not(.life__item--wide) { aspect-ratio: 3 / 4; }
   .hero__facts ul { grid-template-columns: repeat(2, 1fr); }
   .hero__facts li:nth-child(3) { padding-left: 0; border-left: 0; }
   .hero__facts li:nth-child(n + 3) { border-top: 1px solid var(--ink-line); }
@@ -551,7 +563,7 @@ body::after {
   .band__track { animation: none !important; }
   .js .tl.reveal .tl__bar { transform: none !important; opacity: 1 !important; }
   .js .talks__photo.reveal { clip-path: none !important; }
-  .tool, .tool__shot img { transition: none; }
+  .tool, .tool__shot img, .life__item img { transition: none; }
   ::view-transition-old(publist), ::view-transition-new(publist) { animation: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
