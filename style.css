@@ -176,8 +176,8 @@ ul, ol { list-style: none; }
 }
 
 .hero__facts { position: relative; background: var(--ink); color: var(--ivory); }
-.hero__facts ul { display: grid; grid-template-columns: repeat(3, 1fr); }
-.hero__facts li { padding: 22px 0 26px; display: flex; align-items: baseline; gap: 16px; }
+.hero__facts ul { display: grid; grid-template-columns: repeat(4, 1fr); }
+.hero__facts li { padding: 22px 0 26px; display: flex; align-items: baseline; gap: 12px; }
 .hero__facts li + li { padding-left: clamp(16px, 3vw, 40px); border-left: 1px solid var(--ink-line); }
 .hero__facts .num { font-size: clamp(34px, 4vw, 52px); line-height: 1; color: var(--ivory); font-weight: 500; }
 .hero__facts span:last-child { font-family: var(--sans); font-size: 14px; letter-spacing: 0.14em; color: var(--ivory-dim); }
@@ -230,6 +230,43 @@ ul, ol { list-style: none; }
 .plate__frame img.is-on { clip-path: inset(0); transform: none; z-index: 2; transition: clip-path 0.75s var(--ease), transform 1.1s var(--ease); }
 .plate::before { content: ""; position: absolute; inset: -12px; border: 1px solid rgba(134, 105, 42, 0.45); pointer-events: none; }
 
+/* ---------- 工具 ---------- */
+.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); }
+.tool {
+  display: grid; align-content: start; row-gap: 8px; padding: 18px 18px 26px; text-decoration: none; color: var(--ivory);
+  background: var(--ink-2); border: 1px solid var(--ink-line); border-radius: 22px;
+  transition: translate 300ms var(--ease), border-color 200ms ease-out, box-shadow 300ms var(--ease);
+}
+.tool:hover, .tool:focus-visible { translate: 0 -6px; border-color: var(--gold); box-shadow: 0 34px 60px -34px rgba(0, 0, 0, 0.7); }
+.tool:active { translate: 0 -2px; }
+.tool__shot { display: block; aspect-ratio: 1256 / 785; overflow: hidden; border-radius: 12px; margin-bottom: 14px; background: var(--ink); }
+.tool__shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transition: transform 600ms var(--ease); }
+.tool:hover .tool__shot img, .tool:focus-visible .tool__shot img { transform: scale(1.04); }
+.tool__kind { padding: 0 6px; font-size: 14px; letter-spacing: 0.16em; color: var(--gold); }
+.tool__name { padding: 0 6px; font: 400 clamp(28px, 3vw, 40px)/1.25 var(--serif-tc); letter-spacing: 0.04em; }
+.tool__name:lang(en) { font: 500 clamp(32px, 3.4vw, 46px)/1.15 var(--serif); letter-spacing: 0.01em; }
+.tool__desc { padding: 0 6px; color: var(--ivory-dim); font-size: 16px; max-width: 30em; }
+.tool .textlink { justify-self: start; margin: 10px 6px 0; color: var(--ivory); }
+.tool:hover .textlink, .tool:focus-visible .textlink { color: var(--gold); gap: 16px; }
+
+/* ---------- 小標 ---------- */
+.sub { margin: clamp(48px, 8vh, 80px) 0 20px; font: 400 clamp(22px, 2.2vw, 30px)/1.3 var(--serif-tc); letter-spacing: 0.08em; color: var(--gold); }
+.sec--paper .sub { color: var(--gold-deep); }
+.sub--first { margin-top: 0; }
+
+/* ---------- 演講與諮詢 ---------- */
+.talks { display: grid; grid-template-columns: minmax(0, 5fr) minmax(0, 6fr); column-gap: clamp(24px, 6vw, 88px); align-items: start; }
+.talks__photo { aspect-ratio: 4 / 3; overflow: hidden; border-radius: 22px; }
+.talks__photo img { width: 100%; height: 100%; object-fit: cover; object-position: 78% 50%; }
+.venues { display: flex; flex-wrap: wrap; gap: 10px; }
+.venues li { padding: 9px 18px 10px; border: 1px solid rgba(214, 180, 108, 0.6); border-radius: 999px; font: 400 clamp(18px, 1.6vw, 22px)/1.3 var(--serif-tc); letter-spacing: 0.06em; }
+.services { border-top: 1px solid var(--ink-line); }
+.services li { padding: 13px 0; border-bottom: 1px solid var(--ink-line); color: var(--ivory-dim); font-size: 16px; }
+.js .talks__photo.reveal { clip-path: inset(0 100% 0 0 round 22px); transition: clip-path 1.2s var(--ease); }
+.js .talks__photo.reveal.is-in { clip-path: inset(0 0 0 0 round 22px); }
+.js .sub.reveal { opacity: 0; transform: translateY(14px); transition: opacity 0.8s var(--ease), transform 0.8s var(--ease); }
+.js .sub.reveal.is-in { opacity: 1; transform: none; }
+
 /* ---------- 研究方向 ---------- */
 .fields { display: grid; grid-template-columns: repeat(4, 1fr); border-top: 1px solid var(--ink-line); }
 .field { position: relative; padding: 30px clamp(14px, 2vw, 28px) 8px 0; }
@@ -239,6 +276,10 @@ ul, ol { list-style: none; }
 .field + .field { padding-left: clamp(14px, 2vw, 28px); border-left: 1px solid var(--ink-line); }
 .field__en { font: italic 400 22px/1.3 var(--serif); color: var(--gold); }
 .field__zh { text-wrap: balance; margin-top: 12px; font: 400 clamp(23px, 2.2vw, 30px)/1.4 var(--serif-tc); letter-spacing: 0.06em; }
+
+.sec--paper .fields, .sec--paper .field + .field, .sec--paper .field:nth-child(n + 3) { border-color: var(--paper-line); }
+.sec--paper .field__en { color: var(--gold-deep); }
+.sec--paper .field::before { background: var(--gold-deep); }
 
 /* ---------- 著作 ---------- */
 .pubs { border-top: 1px solid var(--paper-line); }
@@ -373,6 +414,10 @@ html.vt-filter::view-transition-old(root), html.vt-filter::view-transition-new(r
   .plate { display: none; }
   .course__thumb { display: block; grid-column: 2 / -1; margin-top: 16px; aspect-ratio: 16 / 10; overflow: hidden; }
   .course__thumb img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; }
+  .tools, .talks { grid-template-columns: minmax(0, 1fr); row-gap: 28px; }
+  .hero__facts ul { grid-template-columns: repeat(2, 1fr); }
+  .hero__facts li:nth-child(3) { padding-left: 0; border-left: 0; }
+  .hero__facts li:nth-child(n + 3) { border-top: 1px solid var(--ink-line); }
   .fields { grid-template-columns: repeat(2, 1fr); }
   .field:nth-child(3) { padding-left: 0; border-left: 0; }
   .field:nth-child(n + 3) { border-top: 1px solid var(--ink-line); }
@@ -418,6 +463,7 @@ body::after {
 .band:hover .band__track { animation-play-state: paused; }
 .band span { font: italic 400 clamp(44px, 7vw, 104px)/1.1 var(--serif); white-space: nowrap; color: transparent; -webkit-text-stroke: 1px rgba(214, 180, 108, 0.8); }
 .band span:nth-of-type(3n + 1) { color: var(--gold); -webkit-text-stroke: 0; }
+.band span:lang(zh-Hant) { font: 400 clamp(38px, 6vw, 88px)/1.2 var(--serif-tc); letter-spacing: 0.08em; }
 .band i { width: 10px; height: 10px; flex: none; background: var(--seal); transform: rotate(45deg); }
 @keyframes band { to { transform: translateX(-50%); } }
 
@@ -447,6 +493,7 @@ body::after {
 .js .hero__facts li:nth-child(1) { animation-delay: 1.2s; }
 .js .hero__facts li:nth-child(2) { animation-delay: 1.32s; }
 .js .hero__facts li:nth-child(3) { animation-delay: 1.44s; }
+.js .hero__facts li:nth-child(4) { animation-delay: 1.56s; }
 @keyframes rise { to { transform: none; } }
 @keyframes stamp { 60% { opacity: 1; transform: scale(0.94) rotate(0deg); } 100% { opacity: 1; transform: none; } }
 @keyframes fadeup { to { opacity: 1; transform: none; } }
@@ -498,6 +545,8 @@ body::after {
   .hero.is-pinned { position: relative; }
   .band__track { animation: none !important; }
   .js .tl.reveal .tl__bar { transform: none !important; opacity: 1 !important; }
+  .js .talks__photo.reveal { clip-path: none !important; }
+  .tool, .tool__shot img { transition: none; }
   ::view-transition-old(publist), ::view-transition-new(publist) { animation: none; }
   ::view-transition-old(root), ::view-transition-new(root) { animation: none; }
 }
