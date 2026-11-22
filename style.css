@@ -231,7 +231,7 @@ ul, ol { list-style: none; }
 .plate::before { content: ""; position: absolute; inset: -12px; border: 1px solid rgba(134, 105, 42, 0.45); pointer-events: none; }
 
 /* ---------- 工具 ---------- */
-.tools { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: clamp(20px, 3vw, 44px); }
+.tools { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: clamp(16px, 2vw, 28px); }
 .tool {
   display: grid; align-content: start; row-gap: 8px; padding: 18px 18px 26px; text-decoration: none; color: var(--ivory);
   background: var(--ink-2); border: 1px solid var(--ink-line); border-radius: 22px;
@@ -239,12 +239,17 @@ ul, ol { list-style: none; }
 }
 .tool:hover, .tool:focus-visible { translate: 0 -6px; border-color: var(--gold); box-shadow: 0 34px 60px -34px rgba(0, 0, 0, 0.7); }
 .tool:active { translate: 0 -2px; }
+.tool--plain:hover { translate: none; border-color: var(--ink-line); box-shadow: none; }
+.tool__shot--fig { background: #fff; }
+.tool .tool__shot--fig img { object-fit: contain; object-position: 50% 50%; padding: 10px; }
+.tool--plain:hover .tool__shot img { transform: none; }
+.tool__state { justify-self: start; margin: 10px 6px 0; padding: 7px 14px 8px; border: 1px dashed rgba(214, 180, 108, 0.7); border-radius: 999px; font-size: 14px; letter-spacing: 0.08em; color: var(--gold); }
 .tool__shot { display: block; aspect-ratio: 1256 / 785; overflow: hidden; border-radius: 12px; margin-bottom: 14px; background: var(--ink); }
 .tool__shot img { width: 100%; height: 100%; object-fit: cover; object-position: 50% 0; transition: transform 600ms var(--ease); }
 .tool:hover .tool__shot img, .tool:focus-visible .tool__shot img { transform: scale(1.04); }
 .tool__kind { padding: 0 6px; font-size: 14px; letter-spacing: 0.16em; color: var(--gold); }
-.tool__name { padding: 0 6px; font: 400 clamp(28px, 3vw, 40px)/1.25 var(--serif-tc); letter-spacing: 0.04em; }
-.tool__name:lang(en) { font: 500 clamp(32px, 3.4vw, 46px)/1.15 var(--serif); letter-spacing: 0.01em; }
+.tool__name { padding: 0 6px; font: 400 clamp(24px, 2.3vw, 32px)/1.25 var(--serif-tc); letter-spacing: 0.04em; }
+.tool__name:lang(en) { font: 500 clamp(30px, 2.8vw, 40px)/1.15 var(--serif); letter-spacing: 0.01em; }
 .tool__desc { padding: 0 6px; color: var(--ivory-dim); font-size: 16px; max-width: 30em; }
 .tool .textlink { justify-self: start; margin: 10px 6px 0; color: var(--ivory); }
 .tool:hover .textlink, .tool:focus-visible .textlink { color: var(--gold); gap: 16px; }
